@@ -1,0 +1,240 @@
+{
+  "name": "AI Booking Assistant",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -336,
+        -16
+      ],
+      "id": "3ddfff48-fb5e-423a-ba95-e5385fe77654",
+      "name": "When chat message received",
+      "webhookId": "492b42e5-7c82-4e09-a5f4-1a5a93fceba3"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a friendly booking assistant for a consulting business.\n\nYour job:\n1. Ask the visitor's name and what they need help with.\n2. Ask their preferred date/time.\n3. Use the CheckAvailability tool to see if that slot is open.\n4. If open, use the BookSlot tool to confirm it.\n5. If not open, offer the nearest open slot instead.\n\nNever say a slot is available unless CheckAvailability confirms it.\nKeep responses short and conversational."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -112,
+        -16
+      ],
+      "id": "b298ef63-36c9-42e3-afc1-a4477e277223",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -64,
+        192
+      ],
+      "id": "d891da83-c449-4725-9274-2da48658ef27",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        80,
+        176
+      ],
+      "id": "ab2c504a-da20-4d46-9c8a-971b63c71b5f",
+      "name": "CheckAvailability"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ALTFifQ4Grw48Z0kF3uECFoJ_VI_wCuAe7gzZDxRXyA",
+          "mode": "list",
+          "cachedResultName": "Bookings",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ALTFifQ4Grw48Z0kF3uECFoJ_VI_wCuAe7gzZDxRXyA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ALTFifQ4Grw48Z0kF3uECFoJ_VI_wCuAe7gzZDxRXyA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Name', ``, 'string') }}",
+            "Date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Date', ``, 'string') }}",
+            "Time": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Time', ``, 'string') }}",
+            "Need": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Need', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Time",
+              "displayName": "Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Need",
+              "displayName": "Need",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        160
+      ],
+      "id": "fb041fdf-e25a-4ed8-b611-e00e72fefd52",
+      "name": "BookSlots",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "VF63wCbCguxPqN6Z",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -256,
+        192
+      ],
+      "id": "aca6e221-7c32-49d0-9554-d426fedeb59e",
+      "name": "Google Gemini Chat Model"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CheckAvailability": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "BookSlots": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "5aa945f6-64e3-4b0b-b98b-9a7e18c32b07",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6b60f8031e0ffd1faee7ef29e608b56af85564d5f3fb97c6b4115a8558a8e8cc"
+  },
+  "nodeGroups": [],
+  "id": "OYnhu7xG5XZjjSLE",
+  "tags": []
+}

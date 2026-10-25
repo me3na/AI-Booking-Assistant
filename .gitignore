@@ -1,0 +1,15 @@
+# n8n environment configuration
+.env
+*.env
+
+# Local active databases (if using SQLite)
+*.sqlite
+.n8n/
+
+# Node modules (if using custom community nodes or npm scripts)
+node_modules/
+dist/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
